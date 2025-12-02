@@ -9,7 +9,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.room.util.copy
 
 class Theme {
-    private val colorTheme = Color()
+    private val colorTheme = presentation.theme.Color
 
     private val shoppingLightColors = lightColorScheme(
         primary = colorTheme.Orange500,
