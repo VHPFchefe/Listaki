@@ -2,11 +2,12 @@ package presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -18,7 +19,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import domain.model.ShoppingItem
@@ -80,34 +83,73 @@ fun CarouselPreview(
         color = AppColors.Cream,
         modifier = Modifier
     ){
-        CarouselCard(mockShoppingLists)
+        CarouselCard(mockShoppingLists, onEditClick = {})
+    }
+}
+
+@Preview(showBackground = true, name = "Empty Carousel")
+@Composable
+fun CarouselEmptyPreview() {
+    Surface (
+        color = AppColors.Cream,
+        modifier = Modifier
+    ){
+        CarouselCard(
+            list = emptyList(),
+            onEditClick = {}
+        )
     }
 }
 
 @Composable
-fun CarouselCard(list: List<ShoppingList>){
+fun CarouselCard(list: List<ShoppingList>?,onEditClick: () -> Unit){
     Column (
         modifier = Modifier
             .background(AppColors.Transparent)
     ){
-        ButtonEditList("Editar listas de supermercado")
-        LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-        ) {
-            items(list) { shoppingList ->
-                ListItemCard(
-                    shoppingList = shoppingList,
-                    //modifier = Modifier.width(400.dp)
-                    modifier = Modifier.fillParentMaxWidth(fraction = 0.8f)
-                )
+        ButtonEditList(
+            text = "Editar listas de supermercado",
+            onClick = onEditClick
+        )
+        if(list.isNullOrEmpty()){
+            EmptyState()
+        } else {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                items(list, key = { it.id }) { shoppingList ->
+                    ListItemCard(
+                        shoppingList = shoppingList,
+                        //modifier = Modifier.width(400.dp)
+                        modifier = Modifier.fillParentMaxWidth(fraction = 0.8f)
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-fun ButtonEditList(text: String) {
+fun EmptyState(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(200.dp)
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = "Você ainda não tem nenhuma lista de compras. Que tal criar uma?",
+            style = MaterialTheme.typography.bodyLarge,
+            textAlign = TextAlign.Center,
+            color = AppColors.Black.copy(alpha = 0.6f)
+        )
+    }
+}
+
+@Composable
+fun ButtonEditList(text: String,onClick: () -> Unit) {
     Button(
         colors = ButtonDefaults.buttonColors(AppColors.Transparent),
         onClick = {},
