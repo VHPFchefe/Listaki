@@ -4,6 +4,7 @@ import androidx.compose.animation.core.animateFloatAsState
 import presentation.theme.AppColors
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,12 +33,7 @@ import kotlinx.coroutines.delay
 import presentation.theme.BungeeFamily
 
 @Composable
-fun LoginScreen(
-    //onLoginWithGoogleClick: () -> Unit
-    // A ideia é aparecer a tela de autenticação do google
-    // - enquanto isso a home fica vibrante e com a mensagem de clique aqui oculta -
-    // e após isso a tela escurece -60% de blur- e aparece o texto de clique aqui.
-) {
+fun LoginScreen(onLoginSuccess: () -> Unit) {
     var loginSucceeded by remember {mutableStateOf(false)}
 
     LaunchedEffect(key1 = Unit) {
@@ -114,6 +110,13 @@ fun LoginScreen(
                 fontSize = 46.sp,
                 color = if(isLabelClickHereEnabled) AppColors.Orange500 else AppColors.Transparent,
                 textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .clickable(
+                        enabled = isLabelClickHereEnabled,
+                        onClick = {
+                            onLoginSuccess()
+                        }
+                    )
             )
         }
     }
@@ -122,5 +125,7 @@ fun LoginScreen(
 @Preview(showBackground = true)
 @Composable
 fun LoginPreview() {
-    LoginScreen()
+    LoginScreen(
+        onLoginSuccess = {}
+    )
 }
