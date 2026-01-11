@@ -3,26 +3,39 @@ package com.example.shoppinglist
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.ui.Modifier
+import androidx.activity.viewModels
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import androidx.room.Room
+import domain.viewmodel.HomeViewModel
+import data.local.ShoppingListDatabase
 import navigation.AppNavigation
-import presentation.screens.LoginScreen
-
 
 class MainActivity : ComponentActivity() {
+    private val db by lazy {
+        Room.databaseBuilder(
+            applicationContext,
+            ShoppingListDatabase::class.java,
+            "shopping-list-database.db"
+        ).build()
+    }
+
+    private val viewModel by viewModels<HomeViewModel>(
+        factoryProducer = {
+            viewModelFactory {
+                initializer {
+                    HomeViewModel(db.shoppingListDao())
+                }}
+        }
+    )
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            //ShoppingListTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    AppNavigation() // Ponto de entrada da UI
-                }
-            //}
+            val state by viewModel.state.collectAsState()
+            AppNavigation(state, onEvent = viewModel::onEvent)
         }
     }
 }

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("org.jetbrains.kotlin.plugin.serialization") version "1.9.23"
+    id("com.google.devtools.ksp")
 }
 
 android {
@@ -53,7 +54,6 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.ui.tooling.preview)
     implementation(libs.material3)
-    implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.foundation.layout)
     implementation(libs.androidx.navigation.compose)
     testImplementation(libs.junit)
@@ -64,4 +64,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     debugImplementation(libs.ui.tooling)
+
+    val room_version = "2.8.4"
+    implementation("androidx.room:room-runtime:$room_version")
+    ksp("androidx.room:room-compiler:$room_version")
 }

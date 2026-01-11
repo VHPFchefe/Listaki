@@ -4,11 +4,16 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import domain.event.HomeEvent
+import domain.event.HomeState
 import presentation.screens.LoginScreen
 import presentation.screens.HomeScreen
 
 @Composable
-fun AppNavigation() {
+fun AppNavigation(
+    state: HomeState,
+    onEvent: (HomeEvent) -> Unit
+) {
     val navController = rememberNavController()
 
     NavHost(
@@ -27,7 +32,7 @@ fun AppNavigation() {
             )
         }
         composable(route = Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(state, onEvent)
         }
     }
 }
