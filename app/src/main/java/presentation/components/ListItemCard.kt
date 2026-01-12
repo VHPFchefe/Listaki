@@ -27,26 +27,15 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import domain.model.ShoppingItem
-import domain.model.ShoppingList
+import data.local.model.ShoppingItem
+import data.local.model.ShoppingList
+import domain.event.HomeState
 import presentation.theme.AppColors
 
-@Preview(showBackground = true)
 @Composable
-fun ListItemCardPreview() {
-    val item1 = ShoppingItem(id = 1, name = "Rice", quantity = 5, unity = "kg", isChecked = true)
-    val item2 = ShoppingItem(id = 2, name = "Carioca Beans", quantity = 1, unity = "kg", isChecked = false)
-    val item3 = ShoppingItem(id = 3, name = "Black beans", quantity = 2, unity = "kg", isChecked = false)
-    val listOfiItems = listOf(item1, item2, item3)
-    val shoppingList = ShoppingList(id = 1, name = "Cereals", items = listOfiItems)
-    ListItemCard(shoppingList, modifier = Modifier)
-}
-
-@Composable
-fun ListItemCard(shoppingList: ShoppingList,modifier: Modifier) {
+fun ListItemCard(state: HomeState, shoppingList: ShoppingList, modifier: Modifier) {
     Surface(
         modifier = modifier
             .background(AppColors.Transparent)
@@ -74,7 +63,7 @@ fun ListItemCard(shoppingList: ShoppingList,modifier: Modifier) {
                     .padding(start = 26.dp, top = 26.dp)
             )
 
-            shoppingList.items.forEach {
+            state.shoppingItems.forEach {
                 ListItem(item = it)
             }
 

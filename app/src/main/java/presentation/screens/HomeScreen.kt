@@ -4,10 +4,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Notifications
@@ -16,66 +16,34 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import domain.model.ShoppingList
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.serialization.json.Json
 import presentation.components.CarouselCard
 import presentation.theme.AppColors
 import presentation.theme.BungeeFamily
-import androidx.compose.runtime.getValue
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.viewmodel.compose.viewModel
-import presentation.viewmodel.HomeViewModel
-
-@Preview(
-    showBackground = true,
-    showSystemUi = true,
-    device = "spec:width=360dp,height=640dp,dpi=480"
-)
-@Composable
-fun HomeScreenPreview() {
-    // Mock
-    val context = LocalContext.current
-    val jsonString = context.assets.open("shopping_lists_mock.json")
-        .bufferedReader()
-        .use { it.readText() }
-    val shoppingList = Json.decodeFromString<List<ShoppingList>>(jsonString)
-    HomeScreenContent(shoppingList)
-}
+import domain.event.HomeEvent
+import domain.event.HomeState
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel()
+    state: HomeState,
+    onEvent: (HomeEvent) -> Unit
 ) {
-    val shoppingList by viewModel.shoppingLists.collectAsStateWithLifecycle()
-    HomeScreenContent(shoppingList)
-}
+    println("Category is empty: ${state.categories.isEmpty()}")
 
-@Composable
-fun HomeScreenContent(shoppingList: List<ShoppingList>?) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-    ) {
+    Column {
         TopAppBar()
-        ContentList(shoppingList)
-    }
-}
-
-@Composable
-fun ContentList(shoppingList: List<ShoppingList>?){
-    LazyColumn {
-        // temporary
-        items(10){
-            // First Category
-            CarouselCard(
-                shoppingList,
-                onEditClick = {}
-            )
+        LazyColumn {
+            if(state.categories.isEmpty()){
+                item() {
+                    CarouselCard(state, onEvent)
+                }
+            } else {
+                items(state.categories) { category ->
+                    CarouselCard(state, onEvent)
+                }
+            }
         }
     }
 }

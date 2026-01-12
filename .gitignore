@@ -1,15 +1,39 @@
+gitignore
+# --- IDE and Editors ---
+.idea/
 *.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+.gradle/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
 local.properties
+*.hprof
+
+# --- Android Studio / IntelliJ ---
+*.ipr
+*.iws
+.navigation/
+# Ignore personal dictionary files
+.idea/dictionaries/
+
+# --- Gradle ---
+*/build/
+gradle-app.setting
+# Do not ignore the gradle wrapper jar
+!gradle-wrapper.jar
+
+# --- Log files and System Caches ---
+*.log
+.DS_Store
+Thumbs.db
+
+# --- Secrets and Signing (VERY IMPORTANT) ---
+# Do not upload API keys or APK signing files
+*.jks
+*.keystore
+google-services.json
+
+# --- Kotlin ---
+.kotlin/
+.apple_dist/

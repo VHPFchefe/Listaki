@@ -38,7 +38,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
 
     LaunchedEffect(key1 = Unit) {
         // CHAMAR A FUNÇÃO REAL DE LOGIN DO GOOGLE
-        delay(3000) // Simulando uma espera de 3 segundos
+        delay(1000) // Simulando uma espera de 3 segundos
         val success = true // Simulando que o login foi um sucesso
         loginSucceeded = success
     }
