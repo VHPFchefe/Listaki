@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(
     tableName = "category_list"
 )
-data class CategoryList(
+data class CategoryListDb(
     @ColumnInfo("id_category")
     @PrimaryKey(autoGenerate = true)
     val idCategory: Int?,

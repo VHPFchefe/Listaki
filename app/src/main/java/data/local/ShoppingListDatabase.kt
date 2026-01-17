@@ -2,17 +2,17 @@ package data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import data.local.model.CategoryList
-import data.local.model.ShoppingItem
-import data.local.model.ShoppingList
-import data.local.model.User
+import data.local.model.CategoryListDb
+import data.local.model.ShoppingItemDb
+import data.local.model.ShoppingListDb
+import data.local.model.UserDb
 
 @Database(
     entities = [
-       User::class,
-       CategoryList::class,
-       ShoppingList::class,
-       ShoppingItem::class
+       UserDb::class,
+       CategoryListDb::class,
+       ShoppingListDb::class,
+       ShoppingItemDb::class
     ],
     version = 1,
     exportSchema = false

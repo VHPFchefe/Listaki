@@ -1,4 +1,4 @@
-package presentation.components
+package presentation.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,13 +29,16 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import data.local.model.ShoppingItem
-import data.local.model.ShoppingList
-import domain.event.HomeState
+import presentation.home.domain.model.CategoryListUi
+import presentation.home.domain.model.ShoppingItemUi
+import presentation.home.domain.model.ShoppingListUi
 import presentation.theme.AppColors
 
 @Composable
-fun ListItemCard(state: HomeState, shoppingList: ShoppingList, modifier: Modifier) {
+fun ListItemCard(
+    shoppingListUi: ShoppingListUi,
+    modifier: Modifier = Modifier
+) {
     Surface(
         modifier = modifier
             .background(AppColors.Transparent)
@@ -53,7 +56,7 @@ fun ListItemCard(state: HomeState, shoppingList: ShoppingList, modifier: Modifie
         ){
             // Title
             Text(
-                text = shoppingList.name,
+                text = shoppingListUi.name,
                 color = AppColors.Black,
                 style = MaterialTheme.typography.titleLarge.copy(
                     fontWeight = FontWeight.ExtraBold
@@ -63,8 +66,12 @@ fun ListItemCard(state: HomeState, shoppingList: ShoppingList, modifier: Modifie
                     .padding(start = 26.dp, top = 26.dp)
             )
 
-            state.shoppingItems.forEach {
-                ListItem(item = it)
+            if(shoppingListUi.shoppingItems.isEmpty()) {
+                EmptyState()
+            } else {
+                shoppingListUi.shoppingItems.forEach {item ->
+                    ListItem(item)
+                }
             }
 
             ButtonsBar()
@@ -118,12 +125,10 @@ fun ButtonCustomizable(icon: ImageVector,text: String, contentDescription: Strin
 }
 
 @Composable
-fun ListItem(item: ShoppingItem){
+fun ListItem(item: ShoppingItemUi){
     Column (
         modifier = Modifier
-            //.fillMaxWidth()
             .padding(horizontal = 26.dp)
-            //.padding(top = 16.dp)
             .drawBehind {
                 val strokeWidth = 1.dp.toPx()
                 val y = size.height - strokeWidth / 2

@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import domain.event.HomeEvent
-import domain.event.HomeState
-import presentation.screens.LoginScreen
-import presentation.screens.HomeScreen
+import presentation.home.domain.event.HomeEvent
+import presentation.home.domain.event.HomeState
+import presentation.login.screen.LoginScreen
+import presentation.home.screens.HomeScreen
 
 @Composable
 fun AppNavigation(

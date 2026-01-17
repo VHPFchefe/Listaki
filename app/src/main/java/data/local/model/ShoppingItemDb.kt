@@ -9,13 +9,13 @@ import androidx.room.PrimaryKey
     tableName = "shopping_items",
     foreignKeys = [
         ForeignKey(
-            entity = ShoppingList::class,
+            entity = ShoppingListDb::class,
             parentColumns = ["id_shopping_list"],
             childColumns = ["id_shopping_list"],
             onDelete = ForeignKey.CASCADE
     )]
 )
-data class ShoppingItem (
+data class ShoppingItemDb (
     @PrimaryKey(autoGenerate = true)
     val id: Int? = null,
 

@@ -1,4 +1,4 @@
-package presentation.screens
+package presentation.home.screens
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -19,30 +19,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import presentation.components.CarouselCard
+import presentation.home.components.CarouselCard
+import presentation.home.domain.event.HomeEvent
+import presentation.home.domain.event.HomeState
+import presentation.home.domain.model.CategoryListUi
 import presentation.theme.AppColors
 import presentation.theme.BungeeFamily
-import domain.event.HomeEvent
-import domain.event.HomeState
 
 @Composable
 fun HomeScreen(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit
 ) {
-    println("Category is empty: ${state.categories.isEmpty()}")
+    println("Category is empty: ${state.categoriesUi.isEmpty()}")
 
     Column {
         TopAppBar()
         LazyColumn {
-            if(state.categories.isEmpty()){
-                item() {
-                    CarouselCard(state, onEvent)
-                }
-            } else {
-                items(state.categories) { category ->
-                    CarouselCard(state, onEvent)
-                }
+            items(state.categoriesUi) { category ->
+                CarouselCard(category, state, onEvent)
+            }
+            item {
+                CarouselCard(CategoryListUi(null,"",emptyList()), state, onEvent)
             }
         }
     }
