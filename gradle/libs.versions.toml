@@ -14,6 +14,8 @@ material3 = "1.4.0"
 roomKtx = "2.8.4"
 foundationLayout = "1.9.5"
 navigationCompose = "2.9.6"
+material = "1.13.0"
+foundation = "1.10.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,6 +39,8 @@ material3 = { group = "androidx.compose.material3", name = "material3", version.
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
 androidx-foundation-layout = { group = "androidx.compose.foundation", name = "foundation-layout", version.ref = "foundationLayout" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "foundation" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

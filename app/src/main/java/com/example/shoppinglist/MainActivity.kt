@@ -9,7 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.room.Room
-import domain.viewmodel.HomeViewModel
+import presentation.home.domain.viewmodel.HomeViewModel
 import data.local.ShoppingListDatabase
 import navigation.AppNavigation
 

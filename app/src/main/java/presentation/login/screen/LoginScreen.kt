@@ -1,4 +1,4 @@
-package presentation.screens
+package presentation.login.screen
 
 import androidx.compose.animation.core.animateFloatAsState
 import presentation.theme.AppColors

@@ -1,8 +1,7 @@
-package presentation.components
+package presentation.home.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,22 +17,25 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import domain.event.HomeEvent
-import domain.event.HomeState
-import org.intellij.lang.annotations.JdkConstants
+import presentation.home.domain.event.HomeEvent
+import presentation.home.domain.event.HomeState
+import presentation.home.domain.model.CategoryListUi
 import presentation.theme.AppColors
 
 @Composable
 fun CarouselCard(
+    category: CategoryListUi,
     state: HomeState,
     onEvent: (HomeEvent) -> Unit
 ){
-    val categoryName = state.categoryName
-
+    if(state.isEditingCategory){
+        println("CreateCategoryDialog(state, onEvent)")
+        CreateCategoryDialog(state = state, onEvent = onEvent)
+        onEvent(HomeEvent.DialogIsOpen)
+    }
     Column (
         modifier = Modifier
             .background(AppColors.Transparent)
@@ -42,6 +44,7 @@ fun CarouselCard(
             colors = ButtonDefaults.buttonColors(AppColors.Transparent),
             onClick = {
                 println("onEvent(HomeEvent.ShowDialogEditCategory)")
+                onEvent(HomeEvent.SelectCategory(category))
                 onEvent(HomeEvent.ShowDialogEditCategory)
             },
             modifier = Modifier
@@ -49,7 +52,10 @@ fun CarouselCard(
                 .fillMaxWidth()
         ){
             Text(
-                text = "Editar listas de ${if(categoryName == "") "compras" else categoryName}",
+                text = if(category.name == "")
+                    "Criar uma categoria de compras"
+                else
+                    "Editar listas de ${category.name}",
                 color = AppColors.Black,
                 style = MaterialTheme.typography.titleLarge,
                 modifier = Modifier
@@ -61,18 +67,18 @@ fun CarouselCard(
                 tint = AppColors.Black
             )
         }
-        if(state.shoppingLists.isEmpty()){
-            println("state.shoppingLists.isEmpty()")
+
+        if(category.shoppingListUi.isEmpty()){
+            println("state.shoppingListDbs.isEmpty()")
             EmptyState()
         } else {
             LazyRow(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
-                items(state.shoppingLists) { shoppingList ->
+                items(items = category.shoppingListUi) { shoppingList ->
                     ListItemCard(
-                        state = state,
-                        shoppingList = shoppingList,
+                        shoppingListUi = shoppingList,
                         modifier = Modifier.fillParentMaxWidth(fraction = 0.8f)
                     )
                 }
