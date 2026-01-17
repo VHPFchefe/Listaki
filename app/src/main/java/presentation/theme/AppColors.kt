@@ -21,5 +21,5 @@ object AppColors {
     val Slate800 = Color(0xFF1E293B)
     val Slate600 = Color(0xFF475569)
     val Slate400 = Color(0xFF94A3B8)
-    val Red500 = Color(0xFFEF4444)   // error and remove
+    val Red500 = Color(0xFFFF0D0D)   // error and remove
 }
