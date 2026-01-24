@@ -12,6 +12,7 @@ import androidx.room.Room
 import presentation.home.domain.viewmodel.HomeViewModel
 import data.local.ShoppingListDatabase
 import navigation.AppNavigation
+import presentation.home.domain.event.HomeState
 
 class MainActivity : ComponentActivity() {
     private val db by lazy {
@@ -27,7 +28,8 @@ class MainActivity : ComponentActivity() {
             viewModelFactory {
                 initializer {
                     HomeViewModel(db.shoppingListDao())
-                }}
+                }
+            }
         }
     )
 
@@ -35,7 +37,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             val state by viewModel.state.collectAsState()
-            AppNavigation(state, onEvent = viewModel::onEvent)
+            AppNavigation(state = state, onEvent = viewModel::onEvent)
         }
     }
 }

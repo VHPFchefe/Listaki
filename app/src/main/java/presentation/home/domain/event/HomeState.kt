@@ -8,15 +8,15 @@ import presentation.home.domain.model.ShoppingListUi
 @Immutable
 data class HomeState(
     val categoriesUi: List<CategoryListUi> = emptyList(),
+    val categoryName: String = "",
     val selectedCategory: CategoryListUi? = null,
-
     val isLoadingCategory: Boolean = false,
     val isEditingCategory: Boolean = false,
-    val isDialogOpen: Boolean = false,
-    val isAddingShoppingItem: Boolean = false,
-    val isRemovingShoppingItem: Boolean = false,
-    val isMarkingShoppingItem: Boolean = false,
-    val categoryName: String = "",
+    val isDialogCategoryOpen: Boolean = false,
+
+    val selectedShoppingList: ShoppingListUi? = null,
     val shoppingListName: String = "",
+    val isEditingShoppingListTitle: Boolean = false,
+
     val shoppingItemName: String = ""
 )

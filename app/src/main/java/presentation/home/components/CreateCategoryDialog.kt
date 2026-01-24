@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -46,9 +47,11 @@ fun CreateCategoryDialog(
     onEvent: (HomeEvent) -> Unit,
     state: HomeState
 ){
-    var categoryName by remember { mutableStateOf(state.selectedCategory?.name?:"")}
+    var categoryName by remember {
+        mutableStateOf(state.selectedCategory?.name?:"")
+    }
+
     val isEditing = state.selectedCategory?.name != ""
-    print("isEditing $isEditing")
     BasicAlertDialog(
         onDismissRequest = {
             println("onEvent(HomeEvent.HideDialogEditCategory)")
@@ -85,15 +88,12 @@ fun CreateCategoryDialog(
                             "Editar listas de ${state.selectedCategory?.name}"
                 )
 
-                Text("Nome da categoria",
-                    Modifier
-                        .align(Alignment.Start)
-                        .padding(start = 16.dp, top = 16.dp)
-                )
                 TextField(
+                    modifier = Modifier
+                        .padding(8.dp),
                     value = categoryName,
                     placeholder = {
-                        Text(text = "Nome da categoria")
+                        Text(text = "Digite o nome da categoria")
                     },
                     onValueChange = {
                         categoryName = it
@@ -103,8 +103,11 @@ fun CreateCategoryDialog(
                         showKeyboardOnFocus = true,
 
                     ),
-                    modifier = Modifier
-                        .padding(8.dp)
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = AppColors.Transparent,
+                        unfocusedContainerColor = AppColors.Transparent,
+                        disabledContainerColor = AppColors.Transparent
+                    )
                 )
 
                 Row(
