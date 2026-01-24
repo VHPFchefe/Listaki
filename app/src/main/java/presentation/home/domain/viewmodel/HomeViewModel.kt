@@ -1,65 +1,115 @@
 package presentation.home.domain.viewmodel
 
+import android.util.Log.e
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import data.local.ShoppingListDao
 import data.local.model.CategoryListDb
-import domain.model.CategoryList
+import data.local.model.ShoppingListDb
 import presentation.home.domain.event.HomeState
 import presentation.home.domain.event.HomeEvent
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import domain.model.toCategoryList
 import domain.model.toCategoryListDb
+import domain.model.toCategoryListFromDb
 import domain.model.toCategoryListUi
+import domain.model.toShoppingListDb
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
+
 
 class HomeViewModel(
     private val dao: ShoppingListDao
 ) : ViewModel() {
     private val _state = MutableStateFlow(HomeState())
-    val state = _state.asStateFlow()
-    var categories: List<CategoryList> = emptyList()
+    private val _categoriesWithAllData = dao.getCategoryWithAllData()
 
-    private fun loadCategoryLists() {
-        viewModelScope.launch {
-            try {
-                _state.update {
-                    it.copy(
-                        isLoadingCategory = true
-                    )
-                }
-                dao.getCategoryLists().collect { listCategoryLists ->
-                    categories = listCategoryLists.toCategoryList()
-                    _state.update {
-                        it.copy(
-                            isLoadingCategory = false,
-                            categoriesUi = categories.toCategoryListUi()
-                        )
-                    }
-                }
-            } catch (e: Exception) {
-                println("Error: $e")
-            }
-        }
-    }
+    val state = combine(
+        _state,
+        _categoriesWithAllData
+    ) {state, categoriesWithAllData ->
+        state.copy(
+            categoriesUi = categoriesWithAllData.toCategoryListFromDb().toCategoryListUi()
+        )
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        HomeState()
+    )
 
-    init {
-        println("init")
-        loadCategoryLists()
-    }
 
     fun onEvent(event: HomeEvent) {
         when (event) {
+            is HomeEvent.SelectShoppingList -> {
+
+                _state.update { it.copy(
+                    selectedShoppingList = event.shoppingList,
+                    shoppingListName = event.shoppingList.name
+                )}
+
+                println("select shopping list: ${event.shoppingList.name}")
+            }
+            is HomeEvent.EditShoppingListTitle -> {
+                _state.update { it.copy(
+                    isEditingShoppingListTitle = event.isEditing,
+                )}
+            }
+            is HomeEvent.SetShoppingListName -> {
+                if(event.shoppingListUi.name == event.shoppingListName) {
+                    return
+                }
+                if(event.shoppingListName == "") {
+                    return
+                }
+                val shoppingListDb = ShoppingListDb(
+                    id = event.shoppingListUi.idShoppingList,
+                    idCategory = event.shoppingListUi.idCategory?:-1,
+                    name = event.shoppingListName
+                )
+
+                _state.update { it.copy(
+                    shoppingListName = ""
+                )}
+
+                viewModelScope.launch {
+                    try {
+                        println("dao.updateShoppingList")
+                        dao.updateShoppingList(shoppingListDb)
+                    } catch (e: Exception) {
+                        e("HomeViewModel", "onEvent: $e")
+                        println("ROOM_ERROR: ${e.message}")
+                    }
+                }
+            }
+            is HomeEvent.DeleteShoppingList -> {
+                viewModelScope.launch {
+                    dao.deleteShoppingList(
+                        shoppingList = event.shoppingList.toShoppingListDb()
+                    )
+                }
+            }
+            is HomeEvent.CreateShoppingList -> {
+                viewModelScope.launch {
+                    dao.insertShoppingList(
+                        ShoppingListDb(
+                            name = "Nova lista de compras",
+                            idCategory = event.idCategory,
+                            id = null
+                        )
+                    )
+                }
+            }
+
             is HomeEvent.SelectCategory -> {
                 _state.update { it.copy(
                     selectedCategory = event.category
                 )}
             }
-            is HomeEvent.DialogIsOpen -> {
+            is HomeEvent.DialogAddCategoryIsOpen -> {
                 _state.update { it.copy(
-                    isDialogOpen = true
+                    isDialogCategoryOpen = true
                 )}
             }
             is HomeEvent.DeleteShoppingItem -> {
@@ -135,12 +185,8 @@ class HomeViewModel(
                     categoryName = ""
                 )}
             }
-            is HomeEvent.ChangeShoppingItemName -> {
-                //TODO()
-            }
-            is HomeEvent.ChangeShoppingListName -> {
-                //TODO()
-            }
+
+            is HomeEvent.ChangeShoppingItemName -> TODO()
         }
     }
 }

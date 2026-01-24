@@ -22,4 +22,5 @@ object AppColors {
     val Slate600 = Color(0xFF475569)
     val Slate400 = Color(0xFF94A3B8)
     val Red500 = Color(0xFFFF0D0D)   // error and remove
+    val RedErrorBackground = Color(0xFFD09999)  // error text field
 }

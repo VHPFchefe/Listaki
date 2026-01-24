@@ -1,30 +1,58 @@
 package domain.model
 
 import data.local.model.CategoryListDb
+import data.local.model.CategoryWithAllData
+import data.local.model.ShoppingItemDb
 import data.local.model.ShoppingListDb
-import domain.model.CategoryList
-import domain.model.ShoppingItem
-import domain.model.ShoppingList
+import data.local.model.ShoppingListWithItemsDb
+import presentation.home.domain.model.CategoryListUi
+import presentation.home.domain.model.ShoppingItemUi
+import presentation.home.domain.model.ShoppingListUi
 
-fun List<ShoppingList>.toShoppingList(): List<ShoppingList> {
+fun  List<CategoryWithAllData>.toCategoryListFromDb(): List<CategoryList> {
+    return if(this.isEmpty()){
+        emptyList()
+    }else {
+        return this.map {
+            CategoryList(
+                name = it.category.name,
+                shoppingLists = it.shoppingLists.toShoppingListFromDb(),
+                idCategory = it.category.idCategory
+            )
+        }
+    }
+}
+/*
+.
+.
+.
+ */
+fun  List<ShoppingListWithItemsDb>.toShoppingListFromDb(): List<ShoppingList> {
     return if(this.isEmpty()){
         emptyList()
     }else {
         this.map{
             ShoppingList(
-                name = it.name,
-                shoppingItems = it.shoppingItems.toShoppingItem()
+                name = it.shoppingList.name,
+                shoppingItems = it.shoppingItems.toShoppingItemFromDb(),
+                idShoppingList = it.shoppingList.id,
+                idCategory = it.shoppingList.idCategory
             )
         }
     }
 }
-
-fun List<ShoppingItem>.toShoppingItem(): List<ShoppingItem> {
+/*
+.
+.
+.
+ */
+fun List<ShoppingItemDb>.toShoppingItemFromDb(): List<ShoppingItem> {
     return if(this.isEmpty()){
         emptyList()
     }else {
         this.map{
             ShoppingItem(
+                idShoppingItem = it.id,
                 name = it.name,
                 quantity = it.quantity,
                 unity = it.unity,
@@ -33,61 +61,88 @@ fun List<ShoppingItem>.toShoppingItem(): List<ShoppingItem> {
         }
     }
 }
-fun List<CategoryList>.toCategoryListUi(): List<presentation.home.domain.model.CategoryListUi> {
+/*
+.
+.
+.
+ */
+fun List<CategoryList>.toCategoryListUi(): List<CategoryListUi> {
     return this.map {
-        _root_ide_package_.presentation.home.domain.model.CategoryListUi(
+        CategoryListUi(
             name = it.name,
-            shoppingListUi = it.list.toShoppingListUi(),
+            shoppingListUi = it.shoppingLists.toShoppingListUi(),
             idCategory = it.idCategory
         )
     }
 }
-
-fun List<presentation.home.domain.model.CategoryListUi>.toCategoryListDb(): List<CategoryListDb> {
-    return this.map {
-        CategoryListDb(
-            name = it.name,
-            idCategory = it.idCategory
-        )
-    }
-}
-fun presentation.home.domain.model.CategoryListUi.toCategoryListDb(): CategoryListDb {
-    return CategoryListDb(
-            name = this.name,
-            idCategory = this.idCategory
-        )
-}
-
 fun List<CategoryListDb>.toCategoryList(): List<CategoryList> {
     return this.map {
         CategoryList(
             name = it.name,
-            list = emptyList(),
+            shoppingLists = emptyList(),
             idCategory = it.idCategory
         )
     }
 
 }
-
-fun List<ShoppingList>.toShoppingListUi(): List<presentation.home.domain.model.ShoppingListUi> {
+fun CategoryListUi.toCategoryListDb(): CategoryListDb {
+    return CategoryListDb(
+        name = this.name,
+        idCategory = this.idCategory
+    )
+}
+/*
+.
+.
+.
+ */
+fun List<ShoppingList>.toShoppingListUi(): List<ShoppingListUi> {
     return if(this.isEmpty()){
         emptyList()
     }else {
         this.map{
-            _root_ide_package_.presentation.home.domain.model.ShoppingListUi(
+            ShoppingListUi(
                 name = it.name,
-                shoppingItems = it.shoppingItems.toShoppingItemUi()
+                shoppingItems = it.shoppingItems.toShoppingItemUi(),
+                idShoppingList = it.idShoppingList,
+                idCategory = it.idCategory
             )
         }
     }
 }
-
-fun List<ShoppingItem>.toShoppingItemUi(): List<presentation.home.domain.model.ShoppingItemUi> {
+fun List<ShoppingListDb>.toShoppingList(): List<ShoppingList> {
     return if(this.isEmpty()){
         emptyList()
     }else {
         this.map{
-            _root_ide_package_.presentation.home.domain.model.ShoppingItemUi(
+            ShoppingList(
+                name = it.name,
+                shoppingItems = emptyList(),
+                idShoppingList = it.id,
+                idCategory = it.idCategory
+            )
+        }
+    }
+}
+fun ShoppingListUi.toShoppingListDb(): ShoppingListDb {
+    return ShoppingListDb(
+        id = idShoppingList,
+        name = name,
+        idCategory = idCategory?:-1
+    )
+}
+/*
+.
+.
+.
+ */
+fun List<ShoppingItem>.toShoppingItemUi(): List<ShoppingItemUi> {
+    return if(this.isEmpty()){
+        emptyList()
+    }else {
+        this.map{
+            ShoppingItemUi(
+                idShoppingItem = it.idShoppingItem,
                 name = it.name,
                 quantity = it.quantity,
                 unity = it.unity,

@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import data.local.model.CategoryListDb
+import data.local.model.CategoryWithAllData
 import data.local.model.ShoppingItemDb
 import data.local.model.ShoppingListDb
 import kotlinx.coroutines.flow.Flow
@@ -26,8 +27,15 @@ interface ShoppingListDao {
     @Insert
     suspend fun insertShoppingList(shoppingList: ShoppingListDb)
     @Transaction
+    @Update
+    suspend fun updateShoppingList(shoppingList: ShoppingListDb)
+    @Transaction
     @Delete
     suspend fun deleteShoppingList(shoppingList: ShoppingListDb)
+
+    @Transaction
+    @Query("SELECT * FROM category_list")
+    fun getCategoryWithAllData(): Flow<List<CategoryWithAllData>>
 
     @Transaction
     @Query("SELECT * FROM category_list")

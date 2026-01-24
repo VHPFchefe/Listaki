@@ -1,5 +1,6 @@
 package presentation.home.screens
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -16,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,11 +33,18 @@ fun HomeScreen(
     state: HomeState,
     onEvent: (HomeEvent) -> Unit
 ) {
-    println("Category is empty: ${state.categoriesUi.isEmpty()}")
-
+    val focusManager = androidx.compose.ui.platform.LocalFocusManager.current
+    println("Refresh HomeScreen")
     Column {
         TopAppBar()
-        LazyColumn {
+        LazyColumn (
+            modifier = Modifier
+                .pointerInput(Unit) {
+            detectTapGestures(onTap = {
+                focusManager.clearFocus()
+            })
+        }
+        ){
             items(state.categoriesUi) { category ->
                 CarouselCard(category, state, onEvent)
             }
